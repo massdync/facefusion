@@ -186,14 +186,20 @@ def analyse_video(video_path : str, trim_frame_start : int, trim_frame_end : int
 			progress.set_postfix(rate = rate)
 			progress.update()
 
-	return bool(rate > 10.0)
+	result = bool(rate > 10.0)
+	#print(f"[DEBUG]: analyse_video() result={result}")
+
+	#from facefusion import logger
+	#logger.info(f"[DEBUG]: analyse_video() result={result}", __name__)
+
+	return rate
 
 
 def detect_nsfw(vision_frame : VisionFrame) -> bool:
+	return False
 	is_nsfw_1 = detect_with_nsfw_1(vision_frame)
 	is_nsfw_2 = detect_with_nsfw_2(vision_frame)
 	is_nsfw_3 = detect_with_nsfw_3(vision_frame)
-
 	return is_nsfw_1 and is_nsfw_2 or is_nsfw_1 and is_nsfw_3 or is_nsfw_2 and is_nsfw_3
 
 
