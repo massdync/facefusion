@@ -192,7 +192,7 @@ def analyse_video(video_path : str, trim_frame_start : int, trim_frame_end : int
 	#from facefusion import logger
 	#logger.info(f"[DEBUG]: analyse_video() result={result}", __name__)
 
-	return rate
+	return result
 
 
 def detect_nsfw(vision_frame : VisionFrame) -> bool:
