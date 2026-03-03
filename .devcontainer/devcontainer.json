@@ -1,0 +1,20 @@
+{
+  "name": "facefusion-linux-amd64",
+
+  "build": {
+    "dockerfile": "Dockerfile",
+    "options": ["--platform=linux/amd64"]
+  },
+
+  "runArgs": ["--platform=linux/amd64"],
+
+  "workspaceFolder": "/workspaces/facefusion",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/facefusion,type=bind,consistency=cached",
+
+  "mounts": [
+    "type=volume,source=facefusion-pip-cache,target=/home/vscode/.cache/pip"
+  ],
+
+  "remoteUser": "vscode",
+  "forwardPorts": [7860]
+}
