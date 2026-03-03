@@ -185,7 +185,8 @@ LOCALES : Locales =\
 			'job_run': 'run a queued job',
 			'job_run_all': 'run all queued jobs',
 			'job_retry': 'retry a failed job',
-			'job_retry_all': 'retry all failed jobs'
+			'job_retry_all': 'retry all failed jobs',
+            'share': 'creates a share url with Gradio'
 		},
 		'about':
 		{
