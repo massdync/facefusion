@@ -110,7 +110,20 @@ def merge_frames() -> ErrorCode:
 	output_video_resolution = scale_resolution(detect_video_resolution(state_manager.get_item('target_path')), state_manager.get_item('output_video_scale'))
 	temp_video_fps = restrict_video_fps(state_manager.get_item('target_path'), state_manager.get_item('output_video_fps'))
 
+	def _merge_once() -> bool:
+		return ffmpeg.merge_video(
+			state_manager.get_item('target_path'),
+			temp_video_fps,
+			output_video_resolution,
+			state_manager.get_item('output_video_fps'),
+			trim_frame_start,
+			trim_frame_end
+		)
+
 	logger.info(translator.get('merging_video').format(resolution = pack_resolution(output_video_resolution), fps = state_manager.get_item('output_video_fps')), __name__)
+
+	'''
+	# original
 	if ffmpeg.merge_video(state_manager.get_item('target_path'), temp_video_fps, output_video_resolution, state_manager.get_item('output_video_fps'), trim_frame_start, trim_frame_end):
 		logger.debug(translator.get('merging_video_succeeded'), __name__)
 	else:
@@ -119,6 +132,35 @@ def merge_frames() -> ErrorCode:
 		logger.error(translator.get('merging_video_failed'), __name__)
 		return 1
 	return 0
+	'''
+
+	# first attempt (current encoder)
+	if (_merge_once()):
+		logger.debug(translator.get('merging_video_succeeded'), __name__)
+		return 0
+	
+	if (is_process_stopping()):
+		return 4
+
+	# retry with libx264
+	DEFAULT_ENCODER = 'libx264'
+	original_encoder = state_manager.get_item('output_video_encoder')
+	if (original_encoder != DEFAULT_ENCODER):
+		logger.warn(f"Merging failed with encoder={original_encoder!r}; retrying with 'libx265'...", __name__)
+		try:
+			state_manager.set_item('output_video_encoder', DEFAULT_ENCODER)
+			if (_merge_once()):
+				logger.debug(translator.get('merging_video_succeeded'), __name__)
+				return 0
+
+			if (is_process_stopping()):
+				return 4
+
+		finally:
+			state_manager.set_item('output_video_encoder', original_encoder)
+
+	logger.error(translator.get('merging_video_failed'), __name__)
+	return 1
 
 
 def restore_audio() -> ErrorCode:
