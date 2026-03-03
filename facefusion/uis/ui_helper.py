@@ -20,7 +20,10 @@ def convert_str_none(value : str) -> Optional[str]:
 
 def suggest_output_path(output_directory_path : str, target_path : str) -> Optional[str]:
 	if is_image(target_path) or is_video(target_path):
-		output_file_name = hashlib.sha1(str(state_manager.get_state()).encode()).hexdigest()[:8]
+		original_target_filename = os.path.split(target_path)[-1]
+		#output_file_name = hashlib.sha1(str(state_manager.get_state()).encode()).hexdigest()[:8]
+		output_file_name = original_target_filename + "-df"
+
 		target_file_extension = get_file_extension(target_path)
 		return os.path.join(output_directory_path, output_file_name + target_file_extension)
 	return None

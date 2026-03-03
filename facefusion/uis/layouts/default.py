@@ -56,10 +56,13 @@ def render() -> gradio.Blocks:
 					source.render()
 				with gradio.Blocks():
 					target.render()
+
+			with gradio.Column(scale = 4):
 				with gradio.Blocks():
 					output.render()
 				with gradio.Blocks():
 					terminal.render()
+
 				with gradio.Blocks():
 					ui_workflow.render()
 					instant_runner.render()
